@@ -1,0 +1,47 @@
+trigger:
+- master
+- develop
+
+pool:
+  vmImage: 'VS2017-Win2016'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 3.0.*
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: |
+     src/**/*.csproj
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: |
+     tests/**/*.csproj
+    arguments: '--configuration $(BuildConfiguration)'
+
+- script: dotnet pack --configuration $(buildConfiguration) --no-build --output %Build_ArtifactStagingDirectory%
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'master'),eq(variables['Build.SourceBranchName'], 'develop')))
+  displayName: Pack
+
+- task: NuGetCommand@2
+  displayName: Publish
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'master'),eq(variables['Build.SourceBranchName'], 'develop')))
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishFeedCredentials: 'NewOrbit MyGet Nuget'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
