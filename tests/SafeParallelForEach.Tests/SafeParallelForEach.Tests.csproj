@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\NewOrbit.PackageTemplate\NewOrbit.PackageTemplate.csproj" />
+    <ProjectReference Include="..\..\src\SafeParallelForEach\SafeParallelForEach.csproj" />
   </ItemGroup>
 
 </Project>

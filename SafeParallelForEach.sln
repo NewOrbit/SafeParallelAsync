@@ -10,9 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewOrbit.PackageTemplate.Tests", "tests\NewOrbit.PackageTemplate.Tests\NewOrbit.PackageTemplate.Tests.csproj", "{11B879DD-1986-420B-A924-D32F030016AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeParallelForEach.Tests", "tests\SafeParallelForEach.Tests\SafeParallelForEach.Tests.csproj", "{11B879DD-1986-420B-A924-D32F030016AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewOrbit.PackageTemplate", "src\NewOrbit.PackageTemplate\NewOrbit.PackageTemplate.csproj", "{A5FE8692-3490-47B7-B93C-409750A2048C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeParallelForEach", "src\SafeParallelForEach\SafeParallelForEach.csproj", "{A5FE8692-3490-47B7-B93C-409750A2048C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

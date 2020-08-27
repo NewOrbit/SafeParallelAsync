@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>NewOrbit Ltd</Authors>
-    <PackageTags>NewOrbit PackageTemplate</PackageTags>
-    <AssemblyTitle>NewOrbit PackageTemplate</AssemblyTitle>
+    <PackageTags>Linq IEnumerable Async Task</PackageTags>
+    <AssemblyTitle>IEnumerable.SafeParallelForEach</AssemblyTitle>
     <Company>NewOrbit Ltd</Company>
-    <Copyright>Copyright NewOrbit Ltd 2019</Copyright>
+    <Copyright>Copyright NewOrbit Ltd 2020</Copyright>
 
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>beta1</VersionSuffix>
     <!-- For local/debug builds -->
     <VersionSuffix Condition=" '$(Configuration)' == 'Debug' ">debug</VersionSuffix>
     <!-- This is using variables that are specific to Azure Dev Ops Pipelines -->
