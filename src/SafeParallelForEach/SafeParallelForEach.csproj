@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Authors>NewOrbit Ltd</Authors>
+    <Authors>Frans Lytzen</Authors>
     <PackageTags>Linq IEnumerable Async Task</PackageTags>
     <AssemblyTitle>IEnumerable.SafeParallelForEach</AssemblyTitle>
     <Company>NewOrbit Ltd</Company>
@@ -21,7 +21,7 @@
       $(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb
     </AllowedOutputExtensionsInPackageBuildOutputFolder>
 
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">True</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>../../NewOrbit.Package.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 

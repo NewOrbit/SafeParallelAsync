@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <Authors>NewOrbit Ltd</Authors>
     <Company>NewOrbit Ltd</Company>
-    <Copyright>NewOrbit Ltd 2017</Copyright>
+    <Copyright>NewOrbit Ltd 2020</Copyright>
     <Description>Tests assembly for NewOrbit.PackageTemplate</Description>
 
     <IsPackable>false</IsPackable>
