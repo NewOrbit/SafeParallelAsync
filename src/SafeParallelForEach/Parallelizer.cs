@@ -7,21 +7,35 @@ namespace SafeParallelForEach
 
     public static class Parallelizer
     {
-        public static async Task SafeParallel<Tin>(this IEnumerable<Tin> inputValues, Func<Tin, Task> action, int maxParallelism = 100)
+        public static async Task SafeParallel<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100)
         {
+            if (inputValues is null)
+            {
+                throw new ArgumentNullException(nameof(inputValues));
+            }
 
             var tl = new List<Task>();
             var sem = new SemaphoreSlim(maxParallelism);
-            foreach(var input in inputValues) 
+            foreach (var input in inputValues)
             {
                 await sem.WaitAsync();
-                tl.Add(action(input).ContinueWith(t => sem.Release()));
-            }
-            await Task.WhenAll(tl);
+                var task = action(input);
+                tl.Add(RunIt(task, sem));
 
+                // something like while stack.peek.iscompleted yield return? No, that will pause it. But, I could at least await it... Though, if I do yield return but only when it's done..? I want a pipeline really 'cause this is all about buffering but with yield return it just comes down to how fast the consumer consumes it. So that's probably ok???
+            }
+
+            await Task.WhenAll(tl);
+        }
+
+        private static async Task RunIt(Task task, SemaphoreSlim sem)
+        {
+            await task;
+            sem.Release();
         }
 
         // Can I use IAsyncEnumerable to somehow stream the results back???
         // Action<Task> callback = null ??
+        // exception handling
     }
 }

@@ -56,10 +56,6 @@ namespace SafeParallelForEach.Tests
             maxSeenParallelism.ShouldBe(parallelism);
         }
 
-        [Fact]
-        public void RunsInParallel()
-        {
 
-        }
     }
 }

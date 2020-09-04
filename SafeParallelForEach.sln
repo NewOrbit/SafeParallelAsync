@@ -14,6 +14,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeParallelForEach.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeParallelForEach", "src\SafeParallelForEach\SafeParallelForEach.csproj", "{A5FE8692-3490-47B7-B93C-409750A2048C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8581F86A-97E7-4B79-9AD7-E24F3FB04CEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "tests\Benchmarks\Benchmarks.csproj", "{81D533F5-D78A-4B44-8921-26D8A9E11A6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,11 +32,18 @@ Global
 		{A5FE8692-3490-47B7-B93C-409750A2048C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5FE8692-3490-47B7-B93C-409750A2048C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5FE8692-3490-47B7-B93C-409750A2048C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81D533F5-D78A-4B44-8921-26D8A9E11A6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81D533F5-D78A-4B44-8921-26D8A9E11A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81D533F5-D78A-4B44-8921-26D8A9E11A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81D533F5-D78A-4B44-8921-26D8A9E11A6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5865C007-F066-49A8-8A7D-6A609D17B3A1}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81D533F5-D78A-4B44-8921-26D8A9E11A6F} = {8581F86A-97E7-4B79-9AD7-E24F3FB04CEC}
 	EndGlobalSection
 EndGlobal
