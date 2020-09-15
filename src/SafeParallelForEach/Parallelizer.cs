@@ -7,6 +7,13 @@ namespace SafeParallelForEach
 
     public static class Parallelizer
     {
+        /// <summary>
+        /// Runs the action over all the input items.
+        /// There is no error handling - if the action throws an exception, it will blow and stop processing eventually.
+        /// If desired you can put error handling in the action.
+        /// This will only keep a relatively small number of tasks and input values in scope so can safely be used with 
+        /// streaming IEnumerables that you are reading from an external source.
+        /// </summary>
         public static async Task SafeParallel<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100)
         {
             if (inputValues is null)
