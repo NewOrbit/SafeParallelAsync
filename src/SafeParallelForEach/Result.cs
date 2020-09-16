@@ -1,10 +1,12 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-
 namespace SafeParallelForEach
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+
     public class Result<TIn>
     {
+        private string? errorMessage;
+
         public Result(TIn input)
         {
             this.Input = input;
@@ -20,16 +22,16 @@ namespace SafeParallelForEach
             this.Exception = exception;
         }
 
-        private string? errorMessage;
-
         public TIn Input { get; set; }
 
         public bool Success { get => this.ErrorMessage is null; }
 
-        public string? ErrorMessage { 
-            get => errorMessage ?? this.Exception?.Message; 
-            private set => errorMessage = value; 
-            }
+        public string? ErrorMessage
+        {
+            get => this.errorMessage ?? this.Exception?.Message;
+            private set => this.errorMessage = value;
+        }
+
         public Exception? Exception { get; private set; }
     }
 
@@ -48,9 +50,8 @@ namespace SafeParallelForEach
         {
         }
 
-        [MaybeNull, AllowNull] // See https://stackoverflow.com/questions/55975211/nullable-reference-types-how-to-specify-t-type-without-constraining-to-class
+        [MaybeNull] // See https://stackoverflow.com/questions/55975211/nullable-reference-types-how-to-specify-t-type-without-constraining-to-class
+        [AllowNull]
         public TOut Output { get; private set; } = default(TOut);
     }
-    
-
 }

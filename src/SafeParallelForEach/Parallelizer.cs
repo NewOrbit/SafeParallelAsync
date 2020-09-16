@@ -12,7 +12,7 @@ namespace SafeParallelForEach
         /// Runs the action over all the input items.
         /// There is no error handling - if the action throws an exception, it will blow and stop processing eventually.
         /// If desired you can put error handling in the action.
-        /// This will only keep a relatively small number of tasks and input values in scope so can safely be used with 
+        /// This will only keep a relatively small number of tasks and input values in scope so can safely be used with
         /// streaming IEnumerables that you are reading from an external source.
         /// </summary>
         public static async Task SafeParallel<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
@@ -61,12 +61,11 @@ namespace SafeParallelForEach
 
             var taskQueue = new Queue<Task<Result<TIn>>>();
 
-            
             var sem = new SemaphoreSlim(maxParallelism);
             foreach (var input in inputValues)
             {
                 await sem.WaitAsync();
-                
+
                 taskQueue.Enqueue(RunIt(input, action, sem));
 
                 // Return the tasks that have already compleed
@@ -97,7 +96,6 @@ namespace SafeParallelForEach
 
             var taskQueue = new Queue<Task<Result<TIn, TOut>>>();
 
-            
             var sem = new SemaphoreSlim(maxParallelism);
             foreach (var input in inputValues)
             {
@@ -121,6 +119,7 @@ namespace SafeParallelForEach
 
         private static async Task<Result<TIn>> RunIt<TIn>(TIn input, Func<TIn, Task> action, SemaphoreSlim sem)
         {
+            #pragma warning disable CA1031
             try
             {
                 await action(input);
@@ -130,9 +129,11 @@ namespace SafeParallelForEach
             {
                 return new Result<TIn>(input, e);
             }
-            finally{
+            finally
+            {
                 sem.Release();
             }
+            #pragma warning restore CA1031
         }
 
         private static async Task<Result<TIn, TOut>> RunIt<TIn, TOut>(TIn input, Func<TIn, Task<TOut>> action, SemaphoreSlim sem)

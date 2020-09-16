@@ -13,19 +13,19 @@ namespace SafeParallelForEach.Tests
         [Fact]
         public async Task EachItemIsProcessedOnce()
         {
-            var inputValues = Enumerable.Range(1,100);
-            
+            var inputValues = Enumerable.Range(1, 100);
+
             Func<int, Task> action = async (int i) => {
                 await Task.Delay(10);
             };
 
             ConcurrentBag<Result<int>> results = new ConcurrentBag<Result<int>>();
 
-            await foreach(var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParrallelWithResult(action))
             {
                 results.Add(result);
             }
-            
+
             results.Count().ShouldBe(100);
             results.Select(r => r.Input).ShouldBe(inputValues, true);
             results.ShouldAllBe(r => r.Success);
@@ -34,7 +34,7 @@ namespace SafeParallelForEach.Tests
         [Fact]
         public async Task MaxParallelismIsRespected()
         {
-            var inputValues = Enumerable.Range(1,100);
+            var inputValues = Enumerable.Range(1, 100);
             int parallelism = 10;
             int maxSeenParallelism = 0;
             int parallelCounter = 0;
@@ -60,8 +60,7 @@ namespace SafeParallelForEach.Tests
         [Fact]
         public async Task ReportsExceptions()
         {
-            var inputValues = Enumerable.Range(1,100);
-            
+            var inputValues = Enumerable.Range(1, 100);
 
             Func<int, Task> action = async (int i) => {
                 await Task.Delay(10);
@@ -73,11 +72,11 @@ namespace SafeParallelForEach.Tests
 
             ConcurrentBag<Result<int>> results = new ConcurrentBag<Result<int>>();
 
-            await foreach(var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParrallelWithResult(action))
             {
                 results.Add(result);
             }
-            
+
             results.Count().ShouldBe(100);
             results.Count(r => r.Success).ShouldBe(90);
             results.Count(r => !r.Success).ShouldBe(10);
