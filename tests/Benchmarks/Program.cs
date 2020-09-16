@@ -1,11 +1,11 @@
-﻿using System;
-using BenchmarkDotNet.Running;
-
-namespace Benchmarks
+﻿namespace Benchmarks
 {
-    class Program
+    using System;
+    using BenchmarkDotNet.Running;
+
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
             var summary = BenchmarkRunner.Run<TaskRunner>();
         }

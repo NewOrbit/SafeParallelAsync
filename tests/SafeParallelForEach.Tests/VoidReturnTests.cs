@@ -31,7 +31,7 @@ namespace SafeParallelForEach.Tests
             };
             await inputValues.SafeParallel(action);
             usedValues.Count().ShouldBe(100);
-            usedValues.ShouldBe(usedValues, true);
+            usedValues.ShouldBe(inputValues, true);
         }
 
         [Fact]
@@ -56,6 +56,7 @@ namespace SafeParallelForEach.Tests
             maxSeenParallelism.ShouldBe(parallelism);
         }
 
+// TODO: Test cancellation token!
 
     }
 }

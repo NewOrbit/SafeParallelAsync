@@ -2,6 +2,7 @@ namespace SafeParallelForEach
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace SafeParallelForEach
         /// This will only keep a relatively small number of tasks and input values in scope so can safely be used with 
         /// streaming IEnumerables that you are reading from an external source.
         /// </summary>
-        public static async Task SafeParallel<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100)
+        public static async Task SafeParallel<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
             {
@@ -39,6 +40,59 @@ namespace SafeParallelForEach
             }
 
             await Task.WhenAll(taskQueue);
+        }
+
+        public static async IAsyncEnumerable<Result<TIn>> SafeParrallelWithResult<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            if (inputValues is null)
+            {
+                throw new ArgumentNullException(nameof(inputValues));
+            }
+
+            var taskQueue = new Queue<Task<Result<TIn>>>();
+
+            
+            var sem = new SemaphoreSlim(maxParallelism);
+            foreach (var input in inputValues)
+            {
+                await sem.WaitAsync();
+                
+                taskQueue.Enqueue(RunIt(input, action, sem));
+
+                // Return the tasks that have already compleed
+                while (taskQueue.Peek().IsCompleted)
+                {
+                    // As far as I can fathom, there is no way this could throw an exception so not handling it
+                    yield return await taskQueue.Dequeue();
+                }
+            }
+
+            foreach (var task in taskQueue)
+            {
+                yield return await task;
+            }
+        }
+
+        // public static async IAsyncEnumerable<Result<TIn>> SafeParrallelWithResult<TIn, TOut>(this IEnumerable<TIn> inputValue, Func<TIn, Task<TOut>> action, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        // {
+        //     throw new NotImplementedException();
+        // }
+
+        private static async Task<Result<TIn>> RunIt<TIn>(TIn input, Func<TIn, Task> action, SemaphoreSlim sem)
+        {
+            try
+            {
+                await action(input);
+                return new Result<TIn>(input);
+            }
+            catch(Exception e)
+            {
+                return new Result<TIn>(input, e);
+            }
+            finally{
+                sem.Release();
+            }
+            
         }
 
         private static async Task RunIt(Task task, SemaphoreSlim sem)

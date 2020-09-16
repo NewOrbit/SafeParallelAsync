@@ -27,9 +27,30 @@ namespace SafeParallelForEach
 
         public string? ErrorMessage { 
             get => errorMessage ?? this.Exception?.Message; 
-            set => errorMessage = value; 
+            private set => errorMessage = value; 
             }
-        public Exception? Exception { get; set; }
+        public Exception? Exception { get; private set; }
     }
+
+    public class Result<TIn, TOut> : Result<TIn>
+    {
+        public Result(TIn input, TOut output) : base(input)
+        {
+            this.Output = output;
+        }
+
+        public Result(TIn input, TOut output, string errorMessage) : base(input, errorMessage)
+        {
+            this.Output = output;
+        }
+
+        public Result(TIn input, TOut output, Exception exception) : base(input, exception)
+        {
+            this.Output = output;
+        }
+
+        public TOut Output { get; private set; }
+    }
+    
 
 }

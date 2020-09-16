@@ -9,6 +9,10 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>../../NewOrbit.Package.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\SafeParallelForEach\SafeParallelForEach.csproj" />
   </ItemGroup>
