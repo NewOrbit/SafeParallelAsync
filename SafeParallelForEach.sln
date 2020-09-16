@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{18D6D67B-6FC9-4929-A652-1B50F6DAE79C}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		azure-pipelines.yml = azure-pipelines.yml
 		NewOrbit.Package.ruleset = NewOrbit.Package.ruleset
 		README.md = README.md
@@ -16,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeParallelForEach", "src\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8581F86A-97E7-4B79-9AD7-E24F3FB04CEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "tests\Benchmarks\Benchmarks.csproj", "{81D533F5-D78A-4B44-8921-26D8A9E11A6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks", "tests\Benchmarks\Benchmarks.csproj", "{81D533F5-D78A-4B44-8921-26D8A9E11A6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +41,10 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {5865C007-F066-49A8-8A7D-6A609D17B3A1}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{81D533F5-D78A-4B44-8921-26D8A9E11A6F} = {8581F86A-97E7-4B79-9AD7-E24F3FB04CEC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5865C007-F066-49A8-8A7D-6A609D17B3A1}
 	EndGlobalSection
 EndGlobal

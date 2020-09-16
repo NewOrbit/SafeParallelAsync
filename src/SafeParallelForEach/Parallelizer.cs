@@ -15,6 +15,12 @@ namespace SafeParallelForEach
         /// This will only keep a relatively small number of tasks and input values in scope so can safely be used with
         /// streaming IEnumerables that you are reading from an external source.
         /// </summary>
+        /// <param name="inputValues">The IEnumerable you want actions carried out on.</param>
+        /// <param name="action">The async action you want carried out on each item in inputValues.</param>
+        /// <param name="maxParallelism">How many tasks should be allowed to run concurrently.</param>
+        /// <param name="cancellationToken">An optional cancellation token you can use to stop the processing. This will stop more tasks being enqued, but will allow tasks already started to complete.</param>
+        /// <typeparam name="TIn">The type of input values you will supply.</typeparam>
+        /// <returns>A <see cref="Task"/> representing the parallel operation.</returns>
         public static async Task SafeParallel<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
@@ -29,7 +35,6 @@ namespace SafeParallelForEach
 
             var taskQueue = new Queue<Task>();
 
-            // var tl = new List<Task>();
             var sem = new SemaphoreSlim(maxParallelism);
             foreach (var input in inputValues)
             {
@@ -37,7 +42,6 @@ namespace SafeParallelForEach
                 var task = action(input);
                 taskQueue.Enqueue(RunIt(task, sem));
 
-                // something like while stack.peek.iscompleted yield return? No, that will pause it. But, I could at least await it... Though, if I do yield return but only when it's done..? I want a pipeline really 'cause this is all about buffering but with yield return it just comes down to how fast the consumer consumes it. So that's probably ok???
                 while (taskQueue.Peek().IsCompleted)
                 {
                     await taskQueue.Dequeue();
@@ -47,6 +51,20 @@ namespace SafeParallelForEach
             await Task.WhenAll(taskQueue);
         }
 
+        /// <summary>
+        /// Runs the action over all the input items.
+        /// Errors will be caught and returned in the IAsyncEnumerable.
+        /// This will only keep a relatively small number of tasks and input values in scope so can safely be used with
+        /// streaming IEnumerables that you are reading from an external source.
+        /// However, this will allocate a Result object for each Input so will inherently do more allocations than <see cref="SafeParallel{TIn}(IEnumerable{TIn}, Func{TIn, Task}, int, CancellationToken)"/>.
+        /// Ensure you iterate through the results as they are being processed! If you don't consume the results, the processing will stop.
+        /// </summary>
+        /// <param name="inputValues">The IEnumerable you want actions carried out on.</param>
+        /// <param name="action">The async action you want carried out on each item in inputValues.</param>
+        /// <param name="maxParallelism">How many tasks should be allowed to run concurrently.</param>
+        /// <param name="cancellationToken">An optional cancellation token you can use to stop the processing. This will stop more tasks being enqued, but will allow tasks already started to complete.</param>
+        /// <typeparam name="TIn">The type of input values you will supply.</typeparam>
+        /// <returns>A <see cref="IAsyncEnumerable"/> of <see cref="Result{TIn}"/> which has the input value and any exception that was encountered whilst running the action.</returns>
         public static async IAsyncEnumerable<Result<TIn>> SafeParrallelWithResult<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
@@ -82,6 +100,20 @@ namespace SafeParallelForEach
             }
         }
 
+        /// <summary>
+        /// Runs the action over all the input items and returns the output.
+        /// Errors will be caught and returned in the Result object.
+        /// This will only keep a relatively small number of tasks and input values in scope so can safely be used with
+        /// streaming IEnumerables that you are reading from an external source.
+        /// Ensure you iterate through the results as they are being processed! If you don't consume the results, the processing will stop.
+                /// </summary>
+        /// <param name="inputValues">The IEnumerable you want actions carried out on.</param>
+        /// <param name="action">The async action you want carried out on each item in inputValues.</param>
+        /// <param name="maxParallelism">How many tasks should be allowed to run concurrently.</param>
+        /// <param name="cancellationToken">An optional cancellation token you can use to stop the processing. This will stop more tasks being enqued, but will allow tasks already started to complete.</param>
+        /// <typeparam name="TIn">The type of input values you will supply.</typeparam>
+        /// <typeparam name="TOut">The type of the output from your action.</typeparam>
+        /// <returns>A <see cref="IAsyncEnumerable"/> of <see cref="Result{TIn}"/> which has the input value and any exception that was encountered whilst running the action.</returns>
         public static async IAsyncEnumerable<Result<TIn, TOut>> SafeParrallelWithResult<TIn, TOut>(this IEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
@@ -100,7 +132,7 @@ namespace SafeParallelForEach
             foreach (var input in inputValues)
             {
                 await sem.WaitAsync();
-                
+
                 taskQueue.Enqueue(RunIt(input, action, sem));
 
                 // Return the tasks that have already compleed
@@ -125,7 +157,7 @@ namespace SafeParallelForEach
                 await action(input);
                 return new Result<TIn>(input);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new Result<TIn>(input, e);
             }
@@ -138,18 +170,21 @@ namespace SafeParallelForEach
 
         private static async Task<Result<TIn, TOut>> RunIt<TIn, TOut>(TIn input, Func<TIn, Task<TOut>> action, SemaphoreSlim sem)
         {
+            #pragma warning disable CA1031
             try
             {
                 TOut output = await action(input);
                 return new Result<TIn, TOut>(input, output);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new Result<TIn, TOut>(input, e);
             }
-            finally{
+            finally
+            {
                 sem.Release();
             }
+            #pragma warning restore CA1031
         }
 
         private static async Task RunIt(Task task, SemaphoreSlim sem)

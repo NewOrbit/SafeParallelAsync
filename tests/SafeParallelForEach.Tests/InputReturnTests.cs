@@ -15,7 +15,8 @@ namespace SafeParallelForEach.Tests
         {
             var inputValues = Enumerable.Range(1, 100);
 
-            Func<int, Task> action = async (int i) => {
+            Func<int, Task> action = async (int i) =>
+            {
                 await Task.Delay(10);
             };
 
@@ -38,7 +39,8 @@ namespace SafeParallelForEach.Tests
             int parallelism = 10;
             int maxSeenParallelism = 0;
             int parallelCounter = 0;
-            Func<int, Task> action = async (int i) => {
+            Func<int, Task> action = async (int i) =>
+            {
                 Interlocked.Increment(ref parallelCounter);
                 if (parallelCounter > maxSeenParallelism)
                 {
@@ -62,7 +64,8 @@ namespace SafeParallelForEach.Tests
         {
             var inputValues = Enumerable.Range(1, 100);
 
-            Func<int, Task> action = async (int i) => {
+            Func<int, Task> action = async (int i) =>
+            {
                 await Task.Delay(10);
                 if (i % 10 == 0)
                 {
@@ -85,8 +88,6 @@ namespace SafeParallelForEach.Tests
             results.Select(r => r.Input).ShouldBe(inputValues, true);
         }
 
-// Cancellation test
-
-
+        //// Cancellation test
     }
 }

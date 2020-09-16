@@ -23,9 +23,10 @@ namespace SafeParallelForEach.Tests
         [Fact]
         public async Task EachItemIsProcessedOnce()
         {
-            var inputValues = Enumerable.Range(1,100);
+            var inputValues = Enumerable.Range(1, 100);
             ConcurrentBag<int> usedValues = new ConcurrentBag<int>();
-            Func<int, Task> action = async (int i) => {
+            Func<int, Task> action = async (int i) =>
+            {
                 await Task.Delay(10);
                 usedValues.Add(i);
             };
@@ -37,17 +38,19 @@ namespace SafeParallelForEach.Tests
         [Fact]
         public async Task MaxParallelismIsRespected()
         {
-            var inputValues = Enumerable.Range(1,100);
+            var inputValues = Enumerable.Range(1, 100);
             int parallelism = 10;
             int maxSeenParallelism = 0;
             int parallelCounter = 0;
-            Func<int, Task> action = async (int i) => {
+            Func<int, Task> action = async (int i) =>
+            {
                 Interlocked.Increment(ref parallelCounter);
                 if (parallelCounter > maxSeenParallelism)
                 {
                     // This is not threadsafe but should be good enough for this
                     maxSeenParallelism = parallelCounter;
                 }
+
                 await Task.Delay(10);
                 parallelCounter.ShouldBeLessThanOrEqualTo(parallelism);
                 Interlocked.Decrement(ref parallelCounter);
@@ -56,7 +59,6 @@ namespace SafeParallelForEach.Tests
             maxSeenParallelism.ShouldBe(parallelism);
         }
 
-// TODO: Test cancellation token!
-
+        //// TODO: Test cancellation token!
     }
 }

@@ -35,6 +35,7 @@ namespace SafeParallelForEach
         public Exception? Exception { get; private set; }
     }
 
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "It's a lonely child")]
     public class Result<TIn, TOut> : Result<TIn>
     {
         public Result(TIn input, TOut output) : base(input)
