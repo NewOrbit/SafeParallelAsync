@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SafeParallelForEach
 {
@@ -39,17 +40,16 @@ namespace SafeParallelForEach
             this.Output = output;
         }
 
-        public Result(TIn input, TOut output, string errorMessage) : base(input, errorMessage)
+        public Result(TIn input, string errorMessage) : base(input, errorMessage)
         {
-            this.Output = output;
         }
 
-        public Result(TIn input, TOut output, Exception exception) : base(input, exception)
+        public Result(TIn input, Exception exception) : base(input, exception)
         {
-            this.Output = output;
         }
 
-        public TOut Output { get; private set; }
+        [MaybeNull, AllowNull] // See https://stackoverflow.com/questions/55975211/nullable-reference-types-how-to-specify-t-type-without-constraining-to-class
+        public TOut Output { get; private set; } = default(TOut);
     }
     
 

@@ -22,6 +22,11 @@ namespace SafeParallelForEach
                 throw new ArgumentNullException(nameof(inputValues));
             }
 
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             var taskQueue = new Queue<Task>();
 
             // var tl = new List<Task>();
@@ -49,6 +54,11 @@ namespace SafeParallelForEach
                 throw new ArgumentNullException(nameof(inputValues));
             }
 
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             var taskQueue = new Queue<Task<Result<TIn>>>();
 
             
@@ -73,10 +83,41 @@ namespace SafeParallelForEach
             }
         }
 
-        // public static async IAsyncEnumerable<Result<TIn>> SafeParrallelWithResult<TIn, TOut>(this IEnumerable<TIn> inputValue, Func<TIn, Task<TOut>> action, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        // {
-        //     throw new NotImplementedException();
-        // }
+        public static async IAsyncEnumerable<Result<TIn, TOut>> SafeParrallelWithResult<TIn, TOut>(this IEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            if (inputValues is null)
+            {
+                throw new ArgumentNullException(nameof(inputValues));
+            }
+
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            var taskQueue = new Queue<Task<Result<TIn, TOut>>>();
+
+            
+            var sem = new SemaphoreSlim(maxParallelism);
+            foreach (var input in inputValues)
+            {
+                await sem.WaitAsync();
+                
+                taskQueue.Enqueue(RunIt(input, action, sem));
+
+                // Return the tasks that have already compleed
+                while (taskQueue.Peek().IsCompleted)
+                {
+                    // As far as I can fathom, there is no way this could throw an exception so not handling it
+                    yield return await taskQueue.Dequeue();
+                }
+            }
+
+            foreach (var task in taskQueue)
+            {
+                yield return await task;
+            }
+        }
 
         private static async Task<Result<TIn>> RunIt<TIn>(TIn input, Func<TIn, Task> action, SemaphoreSlim sem)
         {
@@ -92,7 +133,22 @@ namespace SafeParallelForEach
             finally{
                 sem.Release();
             }
-            
+        }
+
+        private static async Task<Result<TIn, TOut>> RunIt<TIn, TOut>(TIn input, Func<TIn, Task<TOut>> action, SemaphoreSlim sem)
+        {
+            try
+            {
+                TOut output = await action(input);
+                return new Result<TIn, TOut>(input, output);
+            }
+            catch(Exception e)
+            {
+                return new Result<TIn, TOut>(input, e);
+            }
+            finally{
+                sem.Release();
+            }
         }
 
         private static async Task RunIt(Task task, SemaphoreSlim sem)
@@ -100,9 +156,5 @@ namespace SafeParallelForEach
             await task;
             sem.Release();
         }
-
-        // Can I use IAsyncEnumerable to somehow stream the results back???
-        // Action<Task> callback = null ??
-        // exception handling
     }
 }
