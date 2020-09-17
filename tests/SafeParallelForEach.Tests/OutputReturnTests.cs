@@ -167,6 +167,27 @@ namespace SafeParallelForEach.Tests
             results.First(r => !r.Success).Output.ShouldBe(null);
         }
 
-        //// Cancellation test
+        [Fact]
+        public async Task RespectsCancellationToken()
+        {
+            var inputValues = Enumerable.Range(1, 100);
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            Func<int, Task<int>> action = async (int i) =>
+            {
+                await Task.Delay(10);
+                return i * 2;
+            };
+
+            ConcurrentBag<Result<int, int>> results = new ConcurrentBag<Result<int, int>>();
+            cancellationTokenSource.CancelAfter(10);
+            await foreach (var result in inputValues.SafeParrallelWithResult(action, 10, cancellationTokenSource.Token))
+            {
+                results.Add(result);
+            }
+
+            results.Count().ShouldBeLessThan(100);
+            results.Count().ShouldBeGreaterThan(0);
+        }
     }
 }

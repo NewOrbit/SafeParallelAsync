@@ -59,6 +59,24 @@ namespace SafeParallelForEach.Tests
             maxSeenParallelism.ShouldBe(parallelism);
         }
 
+        [Fact]
+        public async Task RespectCancellationToken()
+        {
+            var inputValues = Enumerable.Range(1, 100);
+            var cancellationTokenSource = new CancellationTokenSource();
+            ConcurrentBag<int> usedValues = new ConcurrentBag<int>();
+            Func<int, Task> action = async (int i) =>
+            {
+                await Task.Delay(10);
+                usedValues.Add(i);
+            };
+            var task = inputValues.SafeParallel(action, 10, cancellationTokenSource.Token);
+            cancellationTokenSource.CancelAfter(1);
+            await task;
+            usedValues.Count().ShouldBeLessThan(100);
+            usedValues.Count().ShouldBeGreaterThan(0);
+        }
+
         //// TODO: Test cancellation token!
     }
 }
