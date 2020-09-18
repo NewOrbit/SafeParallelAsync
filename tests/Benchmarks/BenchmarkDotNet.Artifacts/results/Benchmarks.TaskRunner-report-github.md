@@ -10,6 +10,6 @@ Intel Core i7-8650U CPU 1.90GHz (Kaby Lake R), 1 CPU, 8 logical and 4 physical c
 ```
 |                Method |    Mean |    Error |   StdDev |     Gen 0 |     Gen 1 | Gen 2 | Allocated |
 |---------------------- |--------:|---------:|---------:|----------:|----------:|------:|----------:|
-|             JustRunIt | 1.574 s | 0.0135 s | 0.0120 s | 8000.0000 | 3000.0000 |     - |  39.04 MB |
-|  RunWithReturnedInput | 1.585 s | 0.0295 s | 0.0276 s | 8000.0000 | 3000.0000 |     - |  42.86 MB |
-| RunWithReturnedOutput | 1.571 s | 0.0204 s | 0.0170 s | 7000.0000 | 3000.0000 |     - |  42.84 MB |
+|             JustRunIt | 1.583 s | 0.0269 s | 0.0264 s | 8000.0000 | 3000.0000 |     - |  38.99 MB |
+|  RunWithReturnedInput | 1.580 s | 0.0248 s | 0.0220 s | 8000.0000 | 4000.0000 |     - |   42.8 MB |
+| RunWithReturnedOutput | 1.580 s | 0.0308 s | 0.0317 s | 9000.0000 | 4000.0000 |     - |  42.79 MB |
