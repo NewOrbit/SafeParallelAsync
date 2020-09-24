@@ -14,7 +14,7 @@ namespace SafeParallelForEach.Tests
         [Fact]
         public async Task EachItemIsProcessedOnce()
         {
-            var inputValues = AsyncEnumerableProvider.Get(100);
+            var inputValues = AsyncEnumerableProvider.GetInts(100);
             ConcurrentBag<int> usedValues = new ConcurrentBag<int>();
             Func<int, Task> action = async (int i) =>
             {
@@ -23,14 +23,14 @@ namespace SafeParallelForEach.Tests
             };
             await inputValues.SafeParallel(action);
             usedValues.Count().ShouldBe(100);
-            usedValues.ShouldBe(Enumerable.Range(1,100), true);
+            usedValues.ShouldBe(Enumerable.Range(1, 100), true);
         }
 
         [Fact]
         public async Task MaxParallelismIsRespected()
         {
-            ThreadPool.SetMinThreads(100,100);
-            var inputValues = AsyncEnumerableProvider.Get(100);
+            ThreadPool.SetMinThreads(100, 100);
+            var inputValues = AsyncEnumerableProvider.GetInts(100);
             int parallelism = 10;
             int maxSeenParallelism = 0;
             int parallelCounter = 0;
@@ -54,7 +54,7 @@ namespace SafeParallelForEach.Tests
         [Fact]
         public async Task RespectCancellationToken()
         {
-            var inputValues = AsyncEnumerableProvider.Get(100);
+            var inputValues = AsyncEnumerableProvider.GetInts(100);
             var cancellationTokenSource = new CancellationTokenSource();
             ConcurrentBag<int> usedValues = new ConcurrentBag<int>();
             Func<int, Task> action = async (int i) =>
@@ -68,7 +68,5 @@ namespace SafeParallelForEach.Tests
             usedValues.Count().ShouldBeLessThan(100);
             usedValues.Count().ShouldBeGreaterThan(0);
         }
-
-        
     }
 }
