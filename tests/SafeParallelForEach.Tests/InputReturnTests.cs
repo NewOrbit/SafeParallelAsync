@@ -22,7 +22,7 @@ namespace SafeParallelForEach.Tests
 
             ConcurrentBag<Result<int>> results = new ConcurrentBag<Result<int>>();
 
-            await foreach (var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParallelWithResult(action))
             {
                 results.Add(result);
             }
@@ -52,7 +52,7 @@ namespace SafeParallelForEach.Tests
                 parallelCounter.ShouldBeLessThanOrEqualTo(parallelism);
                 Interlocked.Decrement(ref parallelCounter);
             };
-            await foreach (var result in inputValues.SafeParrallelWithResult(action, parallelism))
+            await foreach (var result in inputValues.SafeParallelWithResult(action, parallelism))
             {
             }
 
@@ -75,7 +75,7 @@ namespace SafeParallelForEach.Tests
 
             ConcurrentBag<Result<int>> results = new ConcurrentBag<Result<int>>();
 
-            await foreach (var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParallelWithResult(action))
             {
                 results.Add(result);
             }
@@ -101,7 +101,7 @@ namespace SafeParallelForEach.Tests
             ConcurrentBag<Result<int>> results = new ConcurrentBag<Result<int>>();
 
             cancellationTokenSource.CancelAfter(10);
-            var asyncEnumerable = inputValues.SafeParrallelWithResult(action, 10);
+            var asyncEnumerable = inputValues.SafeParallelWithResult(action, 10);
             await foreach (var result in asyncEnumerable.WithCancellation(cancellationTokenSource.Token))
             {
                 results.Add(result);

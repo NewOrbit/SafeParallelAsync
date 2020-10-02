@@ -3,7 +3,8 @@ This is a micro library that solves a single problem: How to run many async task
 
 The principles are simple and it's not many lines of code, but we found that every time we had to do this, it required too much thinking and it took too long, even with a code example in our development guidelines, hence this micro library. Feel free to use it from Nuget or just copy the relevant lines of code into your project.
 
-The original inspiration for this came from a [tweet](https://twitter.com/clemensv/status/831462231808339971) by Clemens Vasters. 
+The original inspiration for this came from a [tweet](https://twitter.com/clemensv/status/831462231808339971) by Clemens Vasters. We have used that code many times, but each time we have to stop and think for too long - so it felt sensible to do a micro library that, effectively, just provides that code without lots of other stuff.   
+There are also scenarios like very large enumerables, return values and the fancy new `IAsyncEnumerable` that I wanted to support.
 
 # Why
 One of the very nice things in C# Async is that it makes it easy to do things in parallel. For example, if you need to write 100 messages to a queue, you can do it in parallel instead of one by one, effectively speeding up your code by 100x. 
@@ -21,13 +22,15 @@ This micro library:
 # Background information
 I have given a talk about the how async in C# *actually* works (it is probably different to what you think) a few times. A recording is available [on my blog](https://www.lytzen.name/2019/04/29/Everything-I-thought-I-knew-about-async-was-wrong.html)
 
-## Installation
+
+
+# Installation
 TO BE DONE!
 ```cmd
 dotnet add SafeParallelForEach
 ```
 
-## Usage
+# Usage
 If you wanted to just write all the items in an `IEnumerable` to a queue, you could do something like this:
 ```csharp
     await enumerable.SafeParallel(async msg => await queueWriter.Write(msg));
@@ -35,10 +38,20 @@ If you wanted to just write all the items in an `IEnumerable` to a queue, you co
 By default, this will write 100 messages in parallel. It will not wait for all 100 to finish, but will keep writing so that at any one time there are 100 writes in operation.
 
 At the other end of the scale, you can chain things and handle cancellations like this:
+```csharp
+    var cancellationToken = new CancellationToken();
 
+    var process = idList.SafeParallelWithResult(id => dbReader.ReadData(id), 30)
+                    .SafeParallelWithResult(readResult => dbWriter.WriteData(readResult.Output), 100)
+                    .SafeParallel(writeResult => queueWriter.Write(writeResult.Output.SomeDescription), 50, cancellationToken);
+
+    await process;
+```
 
 
 
 See the [Wiki](https://github.com/NewOrbit/SafeParallelForEach/wiki) for more scenarions, including more details on cancellation and potential threading issues.
 
-*Example usage and code snippets here.*
+# What about...
+`Task.Parallels.ForEach`? To my understanding, that method is more about threads (do correct me if I am wrong) whereas this micro library is exclusively about async. 
+

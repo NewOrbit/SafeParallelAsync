@@ -20,9 +20,9 @@ namespace AdvancedUse
         
         public async Task<SourceData> ReadData(int id)
         {
-            Console.Write("Reading record {0} from the database", id.ToString());
+            Console.WriteLine("Reading record {0} from the database", id.ToString());
             
-            await Task.Delay(this.minReadTime + rnd.Next(10));            
+            await Task.Delay(this.minReadTime + rnd.Next(100));            
 
             return new SourceData(id);
         }

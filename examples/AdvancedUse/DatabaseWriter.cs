@@ -10,19 +10,21 @@ namespace AdvancedUse
 
     public class FakeDatabaseWriter : IDatabaseWriter
     {
-        int minWriteTime;
+        private int minWriteTime;
+        
+        private static Random rnd = new Random();
 
         public FakeDatabaseWriter(int minWriteTime)
         {
             this.minWriteTime = minWriteTime;    
         }
-        private static Random rnd = new Random();
+        
         
         public async Task<PostWriteData> WriteData(SourceData data)
         {
-            Console.Write("Writing record {0} to the other database", data.SomeDescription);
+            Console.WriteLine("Writing record {0} to the other database", data.SomeDescription);
             
-            await Task.Delay(this.minWriteTime + rnd.Next(10));            
+            await Task.Delay(this.minWriteTime + rnd.Next(100));            
 
             return new PostWriteData(data);
         }

@@ -12,7 +12,7 @@ namespace SimpleUse
     {
         public async Task Write(string message)
         {
-            Console.Write("Writing {0} to queue", message);
+            Console.WriteLine("Writing {0} to queue", message);
             await Task.Delay(50);            
         }
     }

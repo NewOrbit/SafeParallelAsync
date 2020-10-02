@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+
 namespace AdvancedUse
 {
     public interface IQueueWriter
@@ -7,10 +10,18 @@ namespace AdvancedUse
 
     public class FakeQueueWriter : IQueueWriter
     {
+        int minWriteTime;
+        private static Random rnd = new Random();
+
+        public FakeQueueWriter(int minWriteTime)
+        {
+            this.minWriteTime = minWriteTime;
+            
+        }
         public async Task Write(string message)
         {
-            Console.Write("Writing {0} to queue", message);
-            await Task.Delay(50);            
+            Console.WriteLine("Writing {0} to queue", message);
+            await Task.Delay(minWriteTime + rnd.Next(100));
         }
     }
 }

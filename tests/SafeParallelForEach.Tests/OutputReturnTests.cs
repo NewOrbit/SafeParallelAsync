@@ -23,7 +23,7 @@ namespace SafeParallelForEach.Tests
 
             ConcurrentBag<Result<int, int>> results = new ConcurrentBag<Result<int, int>>();
 
-            await foreach (var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParallelWithResult(action))
             {
                 results.Add(result);
             }
@@ -46,7 +46,7 @@ namespace SafeParallelForEach.Tests
                 return i * 2;
             };
 
-            await foreach (var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParallelWithResult(action))
             {
                 actual += result.Output;
             }
@@ -67,7 +67,7 @@ namespace SafeParallelForEach.Tests
                 return new DummyClass(input.MyInt * 2);
             };
 
-            await foreach (var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParallelWithResult(action))
             {
                 actual += result.Output.MyInt;
             }
@@ -96,7 +96,7 @@ namespace SafeParallelForEach.Tests
                 Interlocked.Decrement(ref parallelCounter);
                 return i * 2;
             };
-            await foreach (var result in inputValues.SafeParrallelWithResult(action, parallelism))
+            await foreach (var result in inputValues.SafeParallelWithResult(action, parallelism))
             {
             }
 
@@ -121,7 +121,7 @@ namespace SafeParallelForEach.Tests
 
             ConcurrentBag<Result<int, int>> results = new ConcurrentBag<Result<int, int>>();
 
-            await foreach (var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParallelWithResult(action))
             {
                 results.Add(result);
             }
@@ -153,7 +153,7 @@ namespace SafeParallelForEach.Tests
 
             var results = new ConcurrentBag<Result<DummyClass, DummyClass>>();
 
-            await foreach (var result in inputValues.SafeParrallelWithResult(action))
+            await foreach (var result in inputValues.SafeParallelWithResult(action))
             {
                 results.Add(result);
             }
@@ -181,7 +181,7 @@ namespace SafeParallelForEach.Tests
 
             ConcurrentBag<Result<int, int>> results = new ConcurrentBag<Result<int, int>>();
             cancellationTokenSource.CancelAfter(10);
-            await foreach (var result in inputValues.SafeParrallelWithResult(action, 10, cancellationTokenSource.Token))
+            await foreach (var result in inputValues.SafeParallelWithResult(action, 10, cancellationTokenSource.Token))
             {
                 results.Add(result);
             }

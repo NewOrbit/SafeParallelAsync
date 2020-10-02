@@ -9,4 +9,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+<PropertyGroup>
+  <EnableNETAnalyzers>false</EnableNETAnalyzers>
+</PropertyGroup>
+
 </Project>

@@ -55,8 +55,7 @@ namespace SafeParallelForEach
                 var task = action(input);
                 taskQueue.Enqueue(RunIt(task, sem));
 
-                // something like while stack.peek.iscompleted yield return? No, that will pause it. But, I could at least await it... Though, if I do yield return but only when it's done..? I want a pipeline really 'cause this is all about buffering but with yield return it just comes down to how fast the consumer consumes it. So that's probably ok???
-                while (taskQueue.Peek().IsCompleted)
+                while (taskQueue.TryPeek(out var t) && t.IsCompleted)
                 {
                     await taskQueue.Dequeue();
                 }
@@ -113,8 +112,7 @@ namespace SafeParallelForEach
                 var task = action(input);
                 taskQueue.Enqueue(RunIt(task, sem));
 
-                // something like while stack.peek.iscompleted yield return? No, that will pause it. But, I could at least await it... Though, if I do yield return but only when it's done..? I want a pipeline really 'cause this is all about buffering but with yield return it just comes down to how fast the consumer consumes it. So that's probably ok???
-                while (taskQueue.Peek().IsCompleted)
+                while (taskQueue.TryPeek(out var t) && t.IsCompleted)
                 {
                     await taskQueue.Dequeue();
                 }
@@ -135,14 +133,14 @@ namespace SafeParallelForEach
         /// <param name="cancellationToken">A cancellation token you can use to stop the processing. If cancelled, the already-enqueed tasks will still be awaited but no more tasks will be enqued. This will not throw a <see cref="TaskCancelledException" />.</param>
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <returns>An IAsyncEnumerable with a <see cref="Result{TIn}"/> that has the input value and any exception.</returns>
-        public static IAsyncEnumerable<Result<TIn>> SafeParrallelWithResult<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<Result<TIn>> SafeParallelWithResult<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParrallelWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
+            return SafeParallelWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
         }
 
         /// <summary>
@@ -158,14 +156,14 @@ namespace SafeParallelForEach
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <typeparam name="TOut">The type of result from the action.</typeparam>
         /// <returns>An IAsyncEnumerable with a <see cref="Result{TIn, TOut}"/> that has the input value, the result and any exception.</returns>
-        public static IAsyncEnumerable<Result<TIn, TOut>> SafeParrallelWithResult<TIn, TOut>(this IEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<Result<TIn, TOut>> SafeParallelWithResult<TIn, TOut>(this IEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParrallelWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
+            return SafeParallelWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
         }
 
         /// <summary>
@@ -180,14 +178,14 @@ namespace SafeParallelForEach
         /// <param name="cancellationToken">A cancellation token you can use to stop the processing. If cancelled, the already-enqueed tasks will still be awaited but no more tasks will be enqued. This will not throw a <see cref="TaskCancelledException" />.</param>
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <returns>An IAsyncEnumerable with a <see cref="Result{TIn}"/> that has the input value and any exception.</returns>
-        public static IAsyncEnumerable<Result<TIn>> SafeParrallelWithResult<TIn>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<Result<TIn>> SafeParallelWithResult<TIn>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParrallelWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
+            return SafeParallelWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
         }
 
         /// <summary>
@@ -203,17 +201,17 @@ namespace SafeParallelForEach
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <typeparam name="TOut">The type of the return value from the action.</typeparam>
         /// <returns>An IAsyncEnumerable with a <see cref="Result{TIn, TOut}"/> that has the input value, the result and any exception.</returns>
-        public static IAsyncEnumerable<Result<TIn, TOut>> SafeParrallelWithResult<TIn, TOut>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<Result<TIn, TOut>> SafeParallelWithResult<TIn, TOut>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParrallelWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
+            return SafeParallelWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
         }
 
-        private static async IAsyncEnumerable<TResult> SafeParrallelWithResult<TIn, TResult>(IEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        private static async IAsyncEnumerable<TResult> SafeParallelWithResult<TIn, TResult>(IEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
             {
@@ -242,7 +240,7 @@ namespace SafeParallelForEach
                 taskQueue.Enqueue(runner(input, sem));
 
                 // Return the tasks that have already compleed
-                while (taskQueue.Peek().IsCompleted)
+                while (taskQueue.TryPeek(out var t) && t.IsCompleted)
                 {
                     // As far as I can fathom, there is no way this could throw an exception so not handling it
                     yield return await taskQueue.Dequeue();
@@ -255,7 +253,7 @@ namespace SafeParallelForEach
             }
         }
 
-        private static async IAsyncEnumerable<TResult> SafeParrallelWithResult<TIn, TResult>(IAsyncEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        private static async IAsyncEnumerable<TResult> SafeParallelWithResult<TIn, TResult>(IAsyncEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
             {
@@ -284,7 +282,7 @@ namespace SafeParallelForEach
                 taskQueue.Enqueue(runner(input, sem));
 
                 // Return the tasks that have already compleed
-                while (taskQueue.Peek().IsCompleted)
+                while (taskQueue.TryPeek(out var t) && t.IsCompleted)
                 {
                     // As far as I can fathom, there is no way this could throw an exception so not handling it
                     yield return await taskQueue.Dequeue();
