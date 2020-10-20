@@ -30,9 +30,9 @@ namespace AdvancedUse
             
             var cancellationToken = new CancellationToken();
 
-            var process = idList.SafeParallelWithResult(id => dbReader.ReadData(id), 100)
+            var process = idList.SafeParallelWithResult(id => dbReader.ReadData(id), 30)
                           .SafeParallelWithResult(readResult => dbWriter.WriteData(readResult.Output), 100)
-                          .SafeParallel(writeResult => queueWriter.Write(writeResult.Output.SomeDescription), 100, cancellationToken);
+                          .SafeParallel(writeResult => queueWriter.Write(writeResult.Output.SomeDescription), 50, cancellationToken);
 
             await process;
 

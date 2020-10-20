@@ -9,7 +9,4 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>../../NewOrbit.Package.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
 </Project>
