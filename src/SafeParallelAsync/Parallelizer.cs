@@ -1,4 +1,4 @@
-namespace SafeParallelAsync
+namespace SafeParallel
 {
     using System;
     using System.Collections.Generic;

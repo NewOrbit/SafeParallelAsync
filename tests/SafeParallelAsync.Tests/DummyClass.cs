@@ -1,4 +1,4 @@
-﻿namespace SafeParallelAsync.Tests
+﻿namespace SafeParallel.Tests
 {
     using System;
     using System.Collections.Concurrent;

@@ -5,7 +5,7 @@ namespace Benchmarks
     using System.Linq;
     using System.Threading.Tasks;
     using BenchmarkDotNet.Attributes;
-    using SafeParallelAsync;
+    using SafeParallel;
 
     [MemoryDiagnoser]
     public class TaskRunner

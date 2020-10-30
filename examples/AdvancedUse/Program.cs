@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SafeParallelAsync;
+using SafeParallel;
 
 namespace AdvancedUse
 {
