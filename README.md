@@ -7,12 +7,11 @@ The original inspiration for this came from a [tweet](https://twitter.com/clemen
 There are also scenarios like very large enumerables, return values and the fancy new `IAsyncEnumerable` that I wanted to support.
 
 # Installation
-TO BE DONE!
 ```cmd
 dotnet add SafeParallelAsync
 ```
 
-# Usage
+# Basic Usage
 If you wanted to just write all the items in an `IEnumerable` to a queue, you could do something like this:
 ```csharp
     await enumerable.SafeParallelAsync(async msg => await queueWriter.Write(msg));
@@ -35,6 +34,8 @@ The `SafeParrallelWithResult` methods return a result object you can query - or 
 They have error handling and will catch exceptions; the exception will be returned on the result object. 
 
 The `SafeParallelAsync` methods return a plain `Task` that you can await. This method will not catch errors - if anything throws an exception, it will propagate to your code and interrupt the processing. 
+
+**For more detailed usage instructions, see the [Wiki](https://github.com/NewOrbit/SafeParallelAsync/wiki)**
 
 # Why
 One of the very nice things in C# Async is that it makes it easy to do things in parallel. For example, if you need to write 100 messages to a queue, you can do it in parallel instead of one by one, effectively speeding up your code by 100x. 
