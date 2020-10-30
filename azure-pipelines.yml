@@ -37,11 +37,4 @@ steps:
   condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'master'),eq(variables['Build.SourceBranchName'], 'develop')))
   displayName: Pack
 
-- task: NuGetCommand@2
-  displayName: Publish
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'master'),eq(variables['Build.SourceBranchName'], 'develop')))
-  inputs:
-    command: push
-    nuGetFeedType: external
-    publishFeedCredentials: 'NewOrbit MyGet Nuget'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+
