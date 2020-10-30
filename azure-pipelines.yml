@@ -35,7 +35,7 @@ steps:
     command: test
     projects: |
      tests/**/*.csproj
-    arguments: '--configuration $(BuildConfiguration) --no-build'
+    arguments: '--configuration $(BuildConfiguration)'
 
 - script: dotnet pack ./src/SafeParallelAsync/SafeParallelAsync.csproj --configuration $(buildConfiguration) --no-build --output %Build_ArtifactStagingDirectory%
   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
