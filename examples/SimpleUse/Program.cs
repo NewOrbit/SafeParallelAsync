@@ -18,7 +18,7 @@ namespace SimpleUse
             IQueueWriter queueWriter = new FakeQueueWriter();
             var enumerable = Enumerable.Range(1, 100).Select(i => $"Messsage {i}");
 
-            await enumerable.SafeParallel(async msg => await queueWriter.Write(msg));
+            await enumerable.SafeParallelAsync(async msg => await queueWriter.Write(msg));
         }
     }
 

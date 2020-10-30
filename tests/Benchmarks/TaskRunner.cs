@@ -23,13 +23,13 @@ namespace Benchmarks
         [Benchmark]
         public async Task JustRunIt()
         {
-            await inputdata.SafeParallel(justRunItAction, 1000);
+            await inputdata.SafeParallelAsync(justRunItAction, 1000);
         }
 
         [Benchmark]
         public async Task RunWithReturnedInput()
         {
-            await foreach (var result in inputdata.SafeParallelWithResult(justRunItAction, 1000))
+            await foreach (var result in inputdata.SafeParallelAsyncWithResult(justRunItAction, 1000))
             {
             }
         }
@@ -37,7 +37,7 @@ namespace Benchmarks
         [Benchmark]
         public async Task RunWithReturnedOutput()
         {
-            await foreach (var result in inputdata.SafeParallelWithResult(runWithReturnAction, 1000))
+            await foreach (var result in inputdata.SafeParallelAsyncWithResult(runWithReturnAction, 1000))
             {
             }
         }

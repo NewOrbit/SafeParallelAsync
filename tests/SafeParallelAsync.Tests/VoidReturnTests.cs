@@ -30,7 +30,7 @@ namespace SafeParallel.Tests
                 await Task.Delay(10);
                 usedValues.Add(i);
             };
-            await inputValues.SafeParallel(action);
+            await inputValues.SafeParallelAsync(action);
             usedValues.Count().ShouldBe(100);
             usedValues.ShouldBe(inputValues, true);
         }
@@ -55,7 +55,7 @@ namespace SafeParallel.Tests
                 parallelCounter.ShouldBeLessThanOrEqualTo(parallelism);
                 Interlocked.Decrement(ref parallelCounter);
             };
-            await inputValues.SafeParallel(action, parallelism);
+            await inputValues.SafeParallelAsync(action, parallelism);
             maxSeenParallelism.ShouldBe(parallelism);
         }
 
@@ -70,7 +70,7 @@ namespace SafeParallel.Tests
                 await Task.Delay(10);
                 usedValues.Add(i);
             };
-            var task = inputValues.SafeParallel(action, 10, cancellationTokenSource.Token);
+            var task = inputValues.SafeParallelAsync(action, 10, cancellationTokenSource.Token);
             cancellationTokenSource.CancelAfter(1);
             await task;
             usedValues.Count().ShouldBeLessThan(100);
