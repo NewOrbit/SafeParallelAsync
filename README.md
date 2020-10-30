@@ -6,8 +6,6 @@ The principles are simple and it's not many lines of code, but we found that eve
 The original inspiration for this came from a [tweet](https://twitter.com/clemensv/status/831462231808339971) by Clemens Vasters. We have used that code many times, but each time we have to stop and think for too long - so it felt sensible to do a micro library that, effectively, just provides that code without lots of other stuff.   
 There are also scenarios like very large enumerables, return values and the fancy new `IAsyncEnumerable` that I wanted to support.
 
-See also [CSRakowski.Parallel](https://github.com/csrakowski/ParallelAsync). It offers more functionality in some cases but has a different focus.
-
 # Installation
 TO BE DONE!
 ```cmd
@@ -17,7 +15,7 @@ dotnet add SafeParallelAsync
 # Usage
 If you wanted to just write all the items in an `IEnumerable` to a queue, you could do something like this:
 ```csharp
-    await enumerable.SafeParallel(async msg => await queueWriter.Write(msg));
+    await enumerable.SafeParallelAsync(async msg => await queueWriter.Write(msg));
 ```
 By default, this will write 100 messages in parallel. It will not wait for all 100 to finish, but will keep writing so that at any one time there are 100 writes in operation.
 
@@ -25,18 +23,18 @@ At the other end of the scale, you can chain things and handle cancellations lik
 ```csharp
     var cancellationToken = new CancellationToken();
 
-    var process = idList.SafeParallelWithResult(id => dbReader.ReadData(id), 30)
-                    .SafeParallelWithResult(readResult => dbWriter.WriteData(readResult.Output), 100)
-                    .SafeParallel(writeResult => queueWriter.Write(writeResult.Output.SomeDescription), 50, cancellationToken);
+    var process = idList.SafeParallelAsyncWithResult(id => dbReader.ReadData(id), 30)
+                        .SafeParallelAsyncWithResult(readResult => dbWriter.WriteData(readResult.Output), 100)
+                        .SafeParallelAsync(writeResult => queueWriter.Write(writeResult.Output.SomeDescription), 50, cancellationToken);
 
     await process;
 ```
 The extension methods work for both `IEnumerable` and `IAsyncEnumerable`.
 
-The `SafeParrallelWithResult` methods return a result object you can query - or you can call this extension again to process the results. WithResult returns an `IAsyncEnumerable` so you can use the `.WithCancellationToken` syntax, even when your input is a normal `IEnumerable`. 
+The `SafeParrallelWithResult` methods return a result object you can query - or you can call this extension again to process the results. WithResult returns an `IAsyncEnumerable` so you can optionally use the `.WithCancellationToken` syntax, even when your input is a normal `IEnumerable`. 
 They have error handling and will catch exceptions; the exception will be returned on the result object. 
 
-The `SafeParallel` methods return a plain `Task` that you can await. This method will not catch errors - if anything throws an exception, it will propagate to your code and interrupt the processing. 
+The `SafeParallelAsync` methods return a plain `Task` that you can await. This method will not catch errors - if anything throws an exception, it will propagate to your code and interrupt the processing. 
 
 # Why
 One of the very nice things in C# Async is that it makes it easy to do things in parallel. For example, if you need to write 100 messages to a queue, you can do it in parallel instead of one by one, effectively speeding up your code by 100x. 
@@ -63,5 +61,6 @@ I have given a talk about the how async in C# really works (it is probably diffe
 See the [Wiki](https://github.com/NewOrbit/SafeParallelAsync/wiki) for more scenarions, including more details on cancellation and potential threading issues.
 
 # What about...
-`Task.Parallels.ForEach`? To my understanding, that method is more about threads (do correct me if I am wrong) whereas this micro library is exclusively about async. 
+- `Task.Parallels.ForEach`? To my understanding, that method is more about threads (do correct me if I am wrong) whereas this micro library is exclusively about async. 
+- See also [CSRakowski.Parallel](https://github.com/csrakowski/ParallelAsync). It offers more functionality in some cases but has a different focus.
 
