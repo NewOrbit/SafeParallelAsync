@@ -1,4 +1,4 @@
-namespace SafeParallelForEach
+namespace SafeParallelAsync
 {
     using System;
     using System.Collections.Generic;

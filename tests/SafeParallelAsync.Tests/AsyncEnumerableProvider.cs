@@ -1,4 +1,4 @@
-namespace SafeParallelForEach.Tests
+namespace SafeParallelAsync.Tests
 {
     using System.Collections.Generic;
     using System.Linq;

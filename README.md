@@ -1,15 +1,17 @@
-# SafeParallelForEach
-This is a micro library that solves a single problem: How to run many async tasks in parallel without running too many at the same time - and without running out of memory.
+# SafeParallelAsync
+This is a micro library that solves a single problem: How to run a large number of async tasks in parallel without running too many at the same time - and without running out of memory. 
 
 The principles are simple and it's not many lines of code, but we found that every time we had to do this, it required too much thinking and it took too long, even with a code example in our development guidelines, hence this micro library. Feel free to use it from Nuget or just copy the relevant lines of code into your project.
 
 The original inspiration for this came from a [tweet](https://twitter.com/clemensv/status/831462231808339971) by Clemens Vasters. We have used that code many times, but each time we have to stop and think for too long - so it felt sensible to do a micro library that, effectively, just provides that code without lots of other stuff.   
 There are also scenarios like very large enumerables, return values and the fancy new `IAsyncEnumerable` that I wanted to support.
 
+See also [CSRakowski.Parallel](https://github.com/csrakowski/ParallelAsync). It offers more functionality in some cases but has a different focus.
+
 # Installation
 TO BE DONE!
 ```cmd
-dotnet add SafeParallelForEach
+dotnet add SafeParallelAsync
 ```
 
 # Usage
@@ -58,7 +60,7 @@ I have given a talk about the how async in C# really works (it is probably diffe
 
 
 
-See the [Wiki](https://github.com/NewOrbit/SafeParallelForEach/wiki) for more scenarions, including more details on cancellation and potential threading issues.
+See the [Wiki](https://github.com/NewOrbit/SafeParallelAsync/wiki) for more scenarions, including more details on cancellation and potential threading issues.
 
 # What about...
 `Task.Parallels.ForEach`? To my understanding, that method is more about threads (do correct me if I am wrong) whereas this micro library is exclusively about async. 

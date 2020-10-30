@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SafeParallelForEach\SafeParallelForEach.csproj" />
+    <ProjectReference Include="..\..\src\SafeParallelAsync\SafeParallelAsync.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
-namespace SafeParallelForEach.Tests
+namespace SafeParallelAsync.Tests
 {
     using System;
-    using SafeParallelForEach;
+    using SafeParallelAsync;
     using Shouldly;
     using Xunit;
 

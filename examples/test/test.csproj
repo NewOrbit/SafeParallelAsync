@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SafeParallelForEach\SafeParallelForEach.csproj" />
+    <ProjectReference Include="..\..\src\SafeParallelAsync\SafeParallelAsync.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
