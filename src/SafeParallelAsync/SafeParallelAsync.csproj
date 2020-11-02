@@ -12,7 +12,6 @@
     <PackageProjectUrl>https://github.com/NewOrbit/SafeParallelAsync</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NewOrbit/SafeParallelAsync</RepositoryUrl>
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>
-    <PackageLicenseExpression>MIT-0</PackageLicenseExpression>
 
     <VersionPrefix>0.1.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
@@ -36,5 +35,4 @@
     <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="3.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
   </ItemGroup>
-
 </Project>
