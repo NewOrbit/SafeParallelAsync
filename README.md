@@ -1,10 +1,15 @@
 # SafeParallelAsync
-This is a micro library that solves a single problem: How to run a large number of async tasks in parallel without running too many at the same time - and without running out of memory. 
+- Running async operations one at a time in a for-each loop loses out on the ability to parallelise this for performance.
+- Running too many async network operations in parallel will lead to port exhaustion and could easily take down a web server.
+- Running parallel async operations on a large enumerable can easily lead to running out of memory if try to group the tasks or build up a single list with all the tasks to await at the end. 
 
-The principles are simple and it's not many lines of code, but we found that every time we had to do this, it required too much thinking and it took too long, even with a code example in our development guidelines, hence this micro library. Feel free to use it from Nuget or just copy the relevant lines of code into your project.
+This is a micro library that solves this single problem; how to to run a large (or small) number of async tasks in parallel, without exhausting your network sockets and without using more memory than strictly necessary.  
+It supports both `IEnumerables` and `IAsyncEnumerables`, can return values and can be chained. 
+
+The principles are simple and it's not many lines of code, but we found that every time we had to do this, it required too much thinking and it took too long, even with a code example in our development guidelines. Feel free to use it from Nuget or just copy the relevant lines of code into your project.
 
 The original inspiration for this came from a [tweet](https://twitter.com/clemensv/status/831462231808339971) by Clemens Vasters. We have used that code many times, but each time we have to stop and think for too long - so it felt sensible to do a micro library that, effectively, just provides that code without lots of other stuff.   
-There are also scenarios like very large enumerables, return values and the fancy new `IAsyncEnumerable` that I wanted to support.
+There are also scenarios like very large enumerables, return values and the fancy new `IAsyncEnumerable` that we wanted to support.
 
 # Installation
 ```cmd
@@ -12,7 +17,7 @@ dotnet add SafeParallelAsync
 ```
 
 # Basic Usage
-If you wanted to just write all the items in an `IEnumerable` to a queue, you could do something like this:
+If you wanted to just write all the items in an `IEnumerable` or `IAsyncEnumerable` to a queue, you could do something like this:
 ```csharp
     await enumerable.SafeParallelAsync(async msg => await queueWriter.Write(msg));
 ```
@@ -38,7 +43,7 @@ The `SafeParallelAsync` methods return a plain `Task` that you can await. This m
 **For more detailed usage instructions, see the [Wiki](https://github.com/NewOrbit/SafeParallelAsync/wiki)**
 
 # Why
-One of the very nice things in C# Async is that it makes it easy to do things in parallel. For example, if you need to write 100 messages to a queue, you can do it in parallel instead of one by one, effectively speeding up your code by 100x. 
+One of the very nice things in C# Async is that it makes it easy to do things in parallel. For example, if you need to write 100 messages to a queue, you can do it in parallel instead of one by one, effectively speeding up your code by 100x.  
 But;
 - If you do too many network writes in parallel, you will exhaust your sockets and effectively take your server down.
 - If you do too many operations in parallel, you may overload the backend you are talking to.
@@ -52,9 +57,6 @@ This micro library:
 
 # Background information
 I have given a talk about the how async in C# really works (it is probably different to what you think) a few times. A recording is available [on my blog](https://www.lytzen.name/2019/04/29/Everything-I-thought-I-knew-about-async-was-wrong.html)
-
-
-
 
 
 

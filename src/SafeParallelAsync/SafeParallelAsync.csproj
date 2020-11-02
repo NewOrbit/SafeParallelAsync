@@ -7,9 +7,15 @@
     <AssemblyTitle>SafeParallelAsync</AssemblyTitle>
     <Company>NewOrbit Ltd</Company>
     <Copyright>Copyright NewOrbit Ltd 2020</Copyright>
+    <Authors>FLytzen</Authors>
+    <Description>This is a micro library that solves a single problem: How to run a large number of async tasks in parallel without running too many at the same time - and without running out of memory.</Description>
+    <PackageProjectUrl>https://github.com/NewOrbit/SafeParallelAsync</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/NewOrbit/SafeParallelAsync</RepositoryUrl>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageLicenseUrl>https://github.com/NewOrbit/SafeParallelAsync/blob/master/LICENSE</PackageLicenseUrl>
 
     <VersionPrefix>0.1.0</VersionPrefix>
-    <VersionSuffix>beta1</VersionSuffix>
+    <VersionSuffix></VersionSuffix>
     <Nullable>enable</Nullable>
     <!-- For local/debug builds -->
     <VersionSuffix Condition=" '$(Configuration)' == 'Debug' ">debug</VersionSuffix>
