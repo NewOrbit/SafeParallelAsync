@@ -1,7 +1,7 @@
 # SafeParallelAsync
 - Running async operations one at a time in a for-each loop loses out on the ability to parallelise this for performance.
 - Running too many async network operations in parallel will lead to port exhaustion and could easily take down a web server.
-- Running parallel async operations on a large enumerable can easily lead to running out of memory if try to group the tasks or build up a single list with all the tasks to await at the end. 
+- Running parallel async operations on a large enumerable can easily lead to running out of memory if you try to group the tasks or build up a single list with all the tasks to await at the end. 
 
 This is a micro library that solves this single problem; how to to run a large (or small) number of async tasks in parallel, without exhausting your network sockets and without using more memory than strictly necessary.  
 It supports both `IEnumerables` and `IAsyncEnumerables`, can return values and can be chained. 
