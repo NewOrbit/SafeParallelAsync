@@ -35,7 +35,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task>();
 
-            var sem = new SemaphoreSlim(maxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism);
             foreach (var input in inputValues)
             {
                 try
@@ -92,7 +92,7 @@ namespace SafeParallel
              var taskQueue = new Queue<Task>();
 
              // var tl = new List<Task>();
-             var sem = new SemaphoreSlim(maxParallelism);
+             using var sem = new SemaphoreSlim(maxParallelism);
              await foreach (var input in inputValues.WithCancellation(cancellationToken))
              {
                 try
@@ -220,7 +220,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task<TResult>>();
 
-            var sem = new SemaphoreSlim(maxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism);
             foreach (var input in inputValues)
             {
                 try
@@ -262,7 +262,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task<TResult>>();
 
-            var sem = new SemaphoreSlim(maxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism);
             await foreach (var input in inputValues.WithCancellation(cancellationToken))
             {
                 try
