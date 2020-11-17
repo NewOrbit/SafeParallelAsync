@@ -22,7 +22,7 @@ If you wanted to just write all the items in an `IEnumerable` or `IAsyncEnumerab
     await enumerable.SafeParallelAsync(async msg => await queueWriter.Write(msg));
 ```
 By default, this will write 100 messages in parallel. It will not wait for all 100 to finish, but will keep writing so that at any one time there are 100 writes in operation.
-> Note: You can change default of max parallelism by setting `Parallelizer.MaxParallelism` field to any value you want. E.g. `Parallelizer.MaxParallelism = 150`.
+> Note: You can change default of max parallelism by setting `Parallelizer.MaxParallelismDefault` field to any value you want. E.g. `Parallelizer.MaxParallelismDefault = 150`.
 
 At the other end of the scale, you can chain things and handle cancellations like this:
 ```csharp

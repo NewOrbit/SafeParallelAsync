@@ -8,9 +8,7 @@ namespace SafeParallel
 
     public static class Parallelizer
     {
-        public static readonly int MaxParallelismDefault = 100;
-
-        public static int MaxParallelism { get; set; } = MaxParallelismDefault;
+        public static int MaxParallelismDefault { get; set; } = 100;
 
         /// <summary>
         /// Runs the action over all the input items.
@@ -39,7 +37,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task>();
 
-            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelismDefault);
             foreach (var input in inputValues)
             {
                 try
@@ -95,7 +93,7 @@ namespace SafeParallel
 
              var taskQueue = new Queue<Task>();
 
-             using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelism);
+             using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelismDefault);
              await foreach (var input in inputValues.WithCancellation(cancellationToken))
              {
                 try
@@ -143,7 +141,7 @@ namespace SafeParallel
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelism, cancellationToken);
+            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelismDefault, cancellationToken);
         }
 
         /// <summary>
@@ -166,7 +164,7 @@ namespace SafeParallel
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelism, cancellationToken);
+            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelismDefault, cancellationToken);
         }
 
         /// <summary>
@@ -188,7 +186,7 @@ namespace SafeParallel
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelism, cancellationToken);
+            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelismDefault, cancellationToken);
         }
 
         /// <summary>
@@ -211,7 +209,7 @@ namespace SafeParallel
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelism, cancellationToken);
+            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelismDefault, cancellationToken);
         }
 
         private static async IAsyncEnumerable<TResult> SafeParallelAsyncWithResult<TIn, TResult>(IEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int? maxParallelism = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -223,7 +221,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task<TResult>>();
 
-            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelismDefault);
             foreach (var input in inputValues)
             {
                 try
@@ -265,7 +263,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task<TResult>>();
 
-            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelismDefault);
             await foreach (var input in inputValues.WithCancellation(cancellationToken))
             {
                 try

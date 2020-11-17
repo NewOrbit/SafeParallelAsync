@@ -27,7 +27,7 @@ namespace SafeParallel.Tests
         }
 
         [Fact]
-        public async Task MaxParallelismIsRespected()
+        public async Task MaxParallelismDefaultIsRespected()
         {
             ThreadPool.SetMinThreads(100, 100);
             var inputValues = AsyncEnumerableProvider.GetInts(100);

@@ -33,7 +33,7 @@ namespace SafeParallel.Tests
         }
 
         [Fact]
-        public async Task MaxParallelismIsRespectedWhenPassedForSingleUse()
+        public async Task MaxParallelismDefaultIsRespectedWhenPassedForSingleUse()
         {
             var inputValues = AsyncEnumerableProvider.GetInts(100);
             int parallelism = 10;
@@ -60,10 +60,10 @@ namespace SafeParallel.Tests
         }
 
         [Fact]
-        public async Task MaxParallelismIsRespectedWhenChangedGlobally()
+        public async Task MaxParallelismDefaultIsRespectedWhenChangedGlobally()
         {
             var inputValues = AsyncEnumerableProvider.GetInts(100);
-            Parallelizer.MaxParallelism = 10;
+            Parallelizer.MaxParallelismDefault = 10;
             int maxSeenParallelism = 0;
             int parallelCounter = 0;
             Func<int, Task> action = async (int i) =>
@@ -76,17 +76,17 @@ namespace SafeParallel.Tests
                 }
 
                 await Task.Delay(200);
-                parallelCounter.ShouldBeLessThanOrEqualTo(Parallelizer.MaxParallelism);
+                parallelCounter.ShouldBeLessThanOrEqualTo(Parallelizer.MaxParallelismDefault);
                 Interlocked.Decrement(ref parallelCounter);
             };
             await foreach (var result in inputValues.SafeParallelAsyncWithResult(action))
             {
             }
 
-            maxSeenParallelism.ShouldBe(Parallelizer.MaxParallelism);
+            maxSeenParallelism.ShouldBe(Parallelizer.MaxParallelismDefault);
 
             // Restore it's value to default
-            Parallelizer.MaxParallelism = Parallelizer.MaxParallelismDefault;
+            Parallelizer.MaxParallelismDefault = 100;
         }
 
         [Fact]
