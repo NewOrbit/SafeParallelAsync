@@ -8,6 +8,8 @@ namespace SafeParallel
 
     public static class Parallelizer
     {
+        public static int MaxParallelismDefault { get; set; } = 100;
+
         /// <summary>
         /// Runs the action over all the input items.
         /// There is no error handling - if the action throws an exception, it will blow and stop processing eventually.
@@ -21,7 +23,7 @@ namespace SafeParallel
         /// <param name="cancellationToken">A cancellation token you can use to stop the processing. If cancelled, the already-enqueed tasks will still be awaited but no more tasks will be enqued. This will not throw a <see cref="TaskCancelledException" />.</param>
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <returns>A <see cref="Task"/> you should await - when it's done, all the items have been processed.</returns>
-        public static async Task SafeParallelAsync<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static async Task SafeParallelAsync<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int? maxParallelism = null, CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
             {
@@ -35,7 +37,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task>();
 
-            using var sem = new SemaphoreSlim(maxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelismDefault);
             foreach (var input in inputValues)
             {
                 try
@@ -77,7 +79,7 @@ namespace SafeParallel
         /// <param name="cancellationToken">A cancellation token you can use to stop the processing. If cancelled, the already-enqueed tasks will still be awaited but no more tasks will be enqued. This will not throw a <see cref="TaskCancelledException" />.</param>
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <returns>A <see cref="Task"/> you should await - when it's done, all the items have been processed.</returns>
-        public static async Task SafeParallelAsync<TIn>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static async Task SafeParallelAsync<TIn>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task> action, int? maxParallelism = null, CancellationToken cancellationToken = default)
         {
              if (inputValues is null)
              {
@@ -91,8 +93,7 @@ namespace SafeParallel
 
              var taskQueue = new Queue<Task>();
 
-             // var tl = new List<Task>();
-             using var sem = new SemaphoreSlim(maxParallelism);
+             using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelismDefault);
              await foreach (var input in inputValues.WithCancellation(cancellationToken))
              {
                 try
@@ -133,14 +134,14 @@ namespace SafeParallel
         /// <param name="cancellationToken">A cancellation token you can use to stop the processing. If cancelled, the already-enqueed tasks will still be awaited but no more tasks will be enqued. This will not throw a <see cref="TaskCancelledException" />.</param>
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <returns>An IAsyncEnumerable with a <see cref="Result{TIn}"/> that has the input value and any exception.</returns>
-        public static IAsyncEnumerable<Result<TIn>> SafeParallelAsyncWithResult<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<Result<TIn>> SafeParallelAsyncWithResult<TIn>(this IEnumerable<TIn> inputValues, Func<TIn, Task> action, int? maxParallelism = null, CancellationToken cancellationToken = default)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
+            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelismDefault, cancellationToken);
         }
 
         /// <summary>
@@ -156,14 +157,14 @@ namespace SafeParallel
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <typeparam name="TOut">The type of result from the action.</typeparam>
         /// <returns>An IAsyncEnumerable with a <see cref="Result{TIn, TOut}"/> that has the input value, the result and any exception.</returns>
-        public static IAsyncEnumerable<Result<TIn, TOut>> SafeParallelAsyncWithResult<TIn, TOut>(this IEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<Result<TIn, TOut>> SafeParallelAsyncWithResult<TIn, TOut>(this IEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int? maxParallelism = null, CancellationToken cancellationToken = default)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
+            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelismDefault, cancellationToken);
         }
 
         /// <summary>
@@ -178,14 +179,14 @@ namespace SafeParallel
         /// <param name="cancellationToken">A cancellation token you can use to stop the processing. If cancelled, the already-enqueed tasks will still be awaited but no more tasks will be enqued. This will not throw a <see cref="TaskCancelledException" />.</param>
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <returns>An IAsyncEnumerable with a <see cref="Result{TIn}"/> that has the input value and any exception.</returns>
-        public static IAsyncEnumerable<Result<TIn>> SafeParallelAsyncWithResult<TIn>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<Result<TIn>> SafeParallelAsyncWithResult<TIn>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task> action, int? maxParallelism = null, CancellationToken cancellationToken = default)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
+            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelismDefault, cancellationToken);
         }
 
         /// <summary>
@@ -201,17 +202,17 @@ namespace SafeParallel
         /// <typeparam name="TIn">The type of the values in inputValues.</typeparam>
         /// <typeparam name="TOut">The type of the return value from the action.</typeparam>
         /// <returns>An IAsyncEnumerable with a <see cref="Result{TIn, TOut}"/> that has the input value, the result and any exception.</returns>
-        public static IAsyncEnumerable<Result<TIn, TOut>> SafeParallelAsyncWithResult<TIn, TOut>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int maxParallelism = 100, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<Result<TIn, TOut>> SafeParallelAsyncWithResult<TIn, TOut>(this IAsyncEnumerable<TIn> inputValues, Func<TIn, Task<TOut>> action, int? maxParallelism = null, CancellationToken cancellationToken = default)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism, cancellationToken);
+            return SafeParallelAsyncWithResult(inputValues, (TIn input, SemaphoreSlim sem) => RunIt(input, action, sem), maxParallelism ?? MaxParallelismDefault, cancellationToken);
         }
 
-        private static async IAsyncEnumerable<TResult> SafeParallelAsyncWithResult<TIn, TResult>(IEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        private static async IAsyncEnumerable<TResult> SafeParallelAsyncWithResult<TIn, TResult>(IEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int? maxParallelism = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
             {
@@ -220,7 +221,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task<TResult>>();
 
-            using var sem = new SemaphoreSlim(maxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelismDefault);
             foreach (var input in inputValues)
             {
                 try
@@ -253,7 +254,7 @@ namespace SafeParallel
             }
         }
 
-        private static async IAsyncEnumerable<TResult> SafeParallelAsyncWithResult<TIn, TResult>(IAsyncEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int maxParallelism = 100, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        private static async IAsyncEnumerable<TResult> SafeParallelAsyncWithResult<TIn, TResult>(IAsyncEnumerable<TIn> inputValues, Func<TIn, SemaphoreSlim, Task<TResult>> runner, int? maxParallelism = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (inputValues is null)
             {
@@ -262,7 +263,7 @@ namespace SafeParallel
 
             var taskQueue = new Queue<Task<TResult>>();
 
-            using var sem = new SemaphoreSlim(maxParallelism);
+            using var sem = new SemaphoreSlim(maxParallelism ?? MaxParallelismDefault);
             await foreach (var input in inputValues.WithCancellation(cancellationToken))
             {
                 try

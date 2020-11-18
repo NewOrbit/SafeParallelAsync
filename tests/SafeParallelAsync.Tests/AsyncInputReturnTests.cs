@@ -33,7 +33,7 @@ namespace SafeParallel.Tests
         }
 
         [Fact]
-        public async Task MaxParallelismIsRespected()
+        public async Task MaxParallelismDefaultIsRespectedWhenPassedForSingleUse()
         {
             var inputValues = AsyncEnumerableProvider.GetInts(100);
             int parallelism = 10;
@@ -57,6 +57,36 @@ namespace SafeParallel.Tests
             }
 
             maxSeenParallelism.ShouldBe(parallelism);
+        }
+
+        [Fact]
+        public async Task MaxParallelismDefaultIsRespectedWhenChangedGlobally()
+        {
+            var inputValues = AsyncEnumerableProvider.GetInts(100);
+            Parallelizer.MaxParallelismDefault = 10;
+            int maxSeenParallelism = 0;
+            int parallelCounter = 0;
+            Func<int, Task> action = async (int i) =>
+            {
+                Interlocked.Increment(ref parallelCounter);
+                if (parallelCounter > maxSeenParallelism)
+                {
+                    // This is not threadsafe but should be good enough for this
+                    maxSeenParallelism = parallelCounter;
+                }
+
+                await Task.Delay(200);
+                parallelCounter.ShouldBeLessThanOrEqualTo(Parallelizer.MaxParallelismDefault);
+                Interlocked.Decrement(ref parallelCounter);
+            };
+            await foreach (var result in inputValues.SafeParallelAsyncWithResult(action))
+            {
+            }
+
+            maxSeenParallelism.ShouldBe(Parallelizer.MaxParallelismDefault);
+
+            // Restore it's value to default
+            Parallelizer.MaxParallelismDefault = 100;
         }
 
         [Fact]

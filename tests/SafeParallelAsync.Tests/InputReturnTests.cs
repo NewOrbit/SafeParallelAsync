@@ -33,7 +33,7 @@ namespace SafeParallel.Tests
         }
 
         [Fact]
-        public async Task MaxParallelismIsRespected()
+        public async Task MaxParallelismDefaultIsRespected()
         {
             var inputValues = Enumerable.Range(1, 100);
             int parallelism = 10;
