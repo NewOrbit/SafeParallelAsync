@@ -13,7 +13,7 @@ There are also scenarios like very large enumerables, return values and the fanc
 
 # Installation
 ```cmd
-dotnet add SafeParallelAsync
+dotnet add package SafeParallelAsync
 ```
 
 # Basic Usage
