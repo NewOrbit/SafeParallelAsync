@@ -6,14 +6,14 @@
     <PackageTags>Linq IEnumerable IAsyncEnumerable Async Task</PackageTags>
     <AssemblyTitle>SafeParallelAsync</AssemblyTitle>
     <Company>NewOrbit Ltd</Company>
-    <Copyright>Copyright NewOrbit Ltd 2020</Copyright>
+    <Copyright>Copyright NewOrbit Ltd 2022</Copyright>
     <Authors>FLytzen</Authors>
     <Description>This is a micro library that solves a single problem: How to run a large number of async tasks in parallel without running too many at the same time - and without running out of memory.</Description>
     <PackageProjectUrl>https://github.com/NewOrbit/SafeParallelAsync</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NewOrbit/SafeParallelAsync</RepositoryUrl>
-    <PackageReleaseNotes>Max Parallelism can now be (optionally) specified globally</PackageReleaseNotes>
+    <PackageReleaseNotes>Made the code analysis packages and stylecop private to avoid polluting the calling project.</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <VersionPrefix>0.3.0</VersionPrefix>
+    <VersionPrefix>0.4.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Nullable>enable</Nullable>
     <!-- For local/debug builds -->
@@ -32,7 +32,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="3.0.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="3.0.0" PrivateAssets="All" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
   </ItemGroup>
 </Project>
