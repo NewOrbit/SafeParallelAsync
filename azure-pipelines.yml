@@ -7,7 +7,7 @@ pr:
 - develop
 
 pool:
-  vmImage: 'VS2017-Win2016'
+  vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
@@ -38,7 +38,7 @@ steps:
     arguments: '--configuration $(BuildConfiguration)'
 
 - script: dotnet pack ./src/SafeParallelAsync/SafeParallelAsync.csproj --configuration $(buildConfiguration) --no-build --output %Build_ArtifactStagingDirectory%
-  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
+  condition: succeeded()
   displayName: Pack
 
 - task: PublishBuildArtifacts@1
