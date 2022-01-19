@@ -12,6 +12,7 @@
     <PackageProjectUrl>https://github.com/NewOrbit/SafeParallelAsync</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NewOrbit/SafeParallelAsync</RepositoryUrl>
     <PackageReleaseNotes>Made the code analysis packages and stylecop private to avoid polluting the calling project.</PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <VersionPrefix>0.4.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
